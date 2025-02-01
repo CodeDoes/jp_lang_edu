@@ -1,0 +1,56 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Storybook Server",
+            "request": "launch",
+            "runtimeArgs": [
+                "storybook",
+            ],
+            "runtimeExecutable": "pnpm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "name": "Storybook Browser",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:6006",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Dev Server",
+            "request": "launch",
+            "runtimeArgs": [
+                "dev","--port","50134"
+            ],
+            "runtimeExecutable": "pnpm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "name": "Dev Browser",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:50134",
+            "webRoot": "${workspaceFolder}"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Storybook",
+            "configurations": ["Storybook Server","Storybook Browser"]
+        },
+        {
+            "name": "Dev",
+            "configurations": ["Dev Server","Dev Browser"]
+        }
+    ]
+}
