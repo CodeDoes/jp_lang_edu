@@ -10,6 +10,7 @@ export function sayJP(text: string) {
   utter.rate = 1;
   synth.speak(utter);
   console.log("say:", text,synth);
+  return utter
 }
 export function cancelJp() {
   const synth = window.speechSynthesis;

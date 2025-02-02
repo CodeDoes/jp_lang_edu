@@ -14,6 +14,7 @@
     answer_index = 0,
     selected_indices = $bindable([]),
     variant = "default",
+    speak = false,
     onvalid,
     oninvalid,
     // floating = false,
@@ -28,10 +29,26 @@
     variant?: "default";
     onvalid?: () => void;
     oninvalid?: () => void;
+    speak?: boolean;
     // floating?: boolean;
     // selected?: boolean;
     // is_active?: boolean;
   } = $props();
+  let utter: SpeechSynthesisUtterance | null = null;
+  $effect(() => {
+    if (speak) {
+      utter = sayJP(question);
+      utter.addEventListener(
+        "end",
+        () => {
+          utter = null;
+        },
+        { once: true },
+      );
+    } else if (utter !== null) {
+      window.speechSynthesis.cancel();
+    }
+  });
 </script>
 
 <div

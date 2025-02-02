@@ -1,33 +1,41 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Dev Server",
-            "request": "launch",
-            "runtimeArgs": [
-                "dev","--port","50134"
-            ],
-            "runtimeExecutable": "pnpm",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "node"
-        },
-        {
-            "name": "Dev Browser",
-            "request": "launch",
-            "type": "chrome",
-            "url": "http://localhost:50134",
-            "webRoot": "${workspaceFolder}"
-        }
-    ],
-    "compounds": [
-        {
-            "name": "Dev",
-            "configurations": ["Dev Server","Dev Browser"]
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Dev Server",
+      "request": "launch",
+      "runtimeArgs": ["dev", "--port", "50134"],
+      "runtimeExecutable": "pnpm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "Dev Server Host",
+      "request": "launch",
+      "runtimeArgs": ["dev", "--host", "--port", "50134"],
+      "runtimeExecutable": "pnpm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "Dev Browser",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:50134",
+      "webRoot": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Dev",
+      "configurations": ["Dev Server", "Dev Browser"]
+    },
+    {
+      "name": "Dev Host",
+      "configurations": ["Dev Server Host", "Dev Browser"]
+    }
+  ]
 }
