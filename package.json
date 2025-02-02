@@ -10,7 +10,6 @@
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "format": "prettier --write .",
     "lint": "prettier --check ."
@@ -18,13 +17,6 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.4",
     "@iconify-json/mdi": "^1.2.3",
-    "@storybook/addon-essentials": "^8.5.2",
-    "@storybook/addon-interactions": "^8.5.2",
-    "@storybook/addon-svelte-csf": "^5.0.0-next.23",
-    "@storybook/blocks": "^8.5.2",
-    "@storybook/svelte": "^8.5.2",
-    "@storybook/sveltekit": "^8.5.2",
-    "@storybook/test": "^8.5.2",
     "@sveltejs/adapter-static": "^3.0.8",
     "@sveltejs/kit": "^2.16.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
@@ -33,7 +25,6 @@
     "prettier": "^3.4.2",
     "prettier-plugin-svelte": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "storybook": "^8.5.2",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "tailwindcss": "^4.0.0",
@@ -45,8 +36,10 @@
     "@tailwindcss/postcss": "^4.0.1",
     "@tailwindcss/vite": "^4.0.1",
     "chance": "^1.1.12",
+    "kuroshiro": "^1.2.0",
     "moderndash": "^4.0.0",
     "postcss": "^8.5.1",
-    "talkify": "^2.2.0"
+    "talkify": "^2.2.0",
+    "yoroshiku": "^0.0.1"
   }
 }

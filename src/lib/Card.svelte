@@ -31,7 +31,7 @@
 </script>
 
 <div
-  class="animate-float flex  h-96 w-64 flex-col gap-1 overflow-auto rounded-lg border bg-gray-300 p-2 shadow-2xl"
+  class="animate-float flex h-96 w-64 flex-col gap-1 overflow-auto rounded-lg border bg-gray-300 p-2 shadow-2xl"
 >
   <button
     onclick={() => {
@@ -43,19 +43,18 @@
     <div class="absolute top-0 left-0 size-full group-hover:bg-white/20"></div>
     <div class="size-full p-1">
       <div
-        class="flex flex-row items-center gap-1 rounded border p-1 text-xl font-semibold"
+        class="flex flex-row items-center gap-1 rounded border p-1 text-xl font-semibold text-start"
       >
         <div class="flex-grow text-xs">{title}</div>
-        <div class="aspect-square size-2 rounded-full bg-green-400"></div>
-        <div class="aspect-square size-2 rounded-full bg-yellow-400"></div>
-        <div class="aspect-square size-2 rounded-full bg-red-400"></div>
       </div>
+      <VolumeIcon class="absolute top-0 right-0 size-8 text-red-400" />
     </div>
     <div
-      class="group relative flex aspect-[8/2] size-full cursor-pointer items-center justify-center text-2xl"
+      class="group relative flex size-full cursor-pointer items-center justify-center text-2xl text-start px-1"
     >
-      <VolumeIcon class="absolute top-0 right-0 size-8 text-red-400" />
-      <div class="relative rounded bg-white/10 font-serif">{question}</div>
+      <div class="relative rounded bg-white/10 font-serif text-wrap">
+        {question}
+      </div>
     </div>
   </button>
   <div class="flex flex-grow flex-col">
@@ -66,7 +65,7 @@
       {#each options as opt}
         <button
           type="button"
-          class="group relative flex cursor-pointer rounded border bg-gray-400"
+          class="group relative flex cursor-pointer rounded border bg-gray-400 text-wrap"
         >
           <div class="absolute size-full group-hover:bg-white/20"></div>
           <div class="px-1 text-start align-top">{opt}&zwj;</div>

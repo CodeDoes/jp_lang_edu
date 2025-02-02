@@ -5,25 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Storybook Server",
-            "request": "launch",
-            "runtimeArgs": [
-                "storybook",
-            ],
-            "runtimeExecutable": "pnpm",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "node"
-        },
-        {
-            "name": "Storybook Browser",
-            "request": "launch",
-            "type": "chrome",
-            "url": "http://localhost:6006",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
             "name": "Dev Server",
             "request": "launch",
             "runtimeArgs": [
@@ -44,10 +25,6 @@
         }
     ],
     "compounds": [
-        {
-            "name": "Storybook",
-            "configurations": ["Storybook Server","Storybook Browser"]
-        },
         {
             "name": "Dev",
             "configurations": ["Dev Server","Dev Browser"]
