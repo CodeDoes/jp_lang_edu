@@ -3,10 +3,9 @@
   import { get_card_data } from "$lib/phrases";
   import Card from "$lib/Card.svelte";
   import { cancelJp, sayJP } from "$lib/tts";
-  const card_data = get_card_data(10);
+  import { onMount } from "svelte";
+  let card_data = $state(get_card_data(0, 40));
   let focus_index: number = $state(0);
-  let scrolling = $state(false);
-  const handleVisible: Action<HTMLDivElement> = (node) => {};
   const handleFocus: Action<HTMLDivElement> = (node) => {
     $effect(() => {
       node
@@ -14,16 +13,9 @@
         ?.scrollIntoView({ behavior: "smooth", inline: "end" });
     });
   };
-  $effect(() => {
-    if (scrolling===false) {
-      sayJP(card_data[focus_index].question);
-    }
+  onMount(() => {
+    sayJP(card_data[focus_index].question);
   });
-  $effect(()=>{
-    if(scrolling===true){
-      cancelJp()
-    }
-  })
 </script>
 
 <div class="flex h-screen w-screen flex-row overflow-auto">
@@ -32,7 +24,7 @@
       <div
         class="mx-auto mt-2 flex size-[2em] items-center justify-center rounded bg-gray-300"
       >
-        {focus_index} {scrolling}
+        {focus_index}
       </div>
     </div>
     <div
@@ -42,7 +34,7 @@
         tabindex="-1"
         onclick={() => {
           if (focus_index > 0) {
-            scrolling = true;
+            cancelJp();
             focus_index = focus_index - 1;
           }
         }}
@@ -54,7 +46,7 @@
         tabindex="-1"
         onclick={() => {
           if (focus_index < card_data.length) {
-            scrolling = true;
+            cancelJp();
             focus_index = focus_index + 1;
           }
         }}
@@ -69,30 +61,35 @@
         focus_index = Math.floor(
           e.currentTarget.scrollLeft / e.currentTarget.clientWidth,
         );
-        scrolling = false;
+        if (focus_index == card_data.length - 1) {
+          card_data = [...card_data, ...get_card_data(card_data.length, 10)];
+        }
+        sayJP(card_data[focus_index].question);
       }}
-      class="absolute size-full snap-x snap-mandatory overflow-auto text-nowrap"
+      class="absolute size-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden text-nowrap"
     >
       {#each card_data as card, i}
         <div
-          class="inline-flex size-full snap-center items-center justify-center border-x align-middle"
-          onfocusin={(e) => {
-            console.log("scroll to", i);
-            focus_index = i;
-            e.currentTarget.scrollIntoView({ behavior: "smooth" });
-          }}
+          class="inline-flex size-full snap-center items-center justify-center border-x"
           data-index={i}
           bind:focused={
             () => focus_index === i,
             (v) => {
               if (v === true) {
-                scrolling = true;
+                cancelJp();
                 focus_index = i;
               }
             }
           }
         >
-          <Card {...card} />
+          <Card
+            {...card}
+            onvalid={() => {
+              if (focus_index < card_data.length) {
+                focus_index += 1;
+              }
+            }}
+          />
         </div>
       {/each}
     </div>
@@ -104,15 +101,21 @@
         {focus_index}/{card_data.length}
       </div>
     </div>
-    {#each card_data as card, i}
-      <button
-        onclick={() => {
-          scrolling=true
-          focus_index = i;
-        }}
-        class="overflow-hidden rounded border bg-gray-400/50 p-1 text-start text-xs text-nowrap text-ellipsis"
-        >{card.question}&zwj;</button
-      >
-    {/each}
+    <div class=" overflow-auto">
+      <div class="flex h-max w-full flex-col ">
+        {#each card_data as card, i}
+          <button
+            onclick={() => {
+              cancelJp();
+              focus_index = i;
+            }}
+            class={[
+              "truncate overflow-hidden p-1 border-y text-start text-xs",
+              focus_index == i ? "bg-gray-400" : "bg-gray-400/50",
+            ]}>{card.question}&zwj;</button
+          >
+        {/each}
+      </div>
+    </div>
   </div>
 </div>

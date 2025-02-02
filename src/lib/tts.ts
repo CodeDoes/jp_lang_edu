@@ -1,6 +1,6 @@
 export function sayJP(text: string) {
   const synth = window.speechSynthesis;
-  cancelJp()
+  cancelJp();
   const utter = new SpeechSynthesisUtterance();
   utter.voice = synth.getVoices().find((v) => v.lang == "ja-JP")!;
   utter.text = text;
@@ -9,12 +9,11 @@ export function sayJP(text: string) {
   utter.volume = 3;
   utter.rate = 1;
   synth.speak(utter);
-  console.log(synth);
+  console.log("say:", text,synth);
 }
-export function cancelJp(){
+export function cancelJp() {
   const synth = window.speechSynthesis;
   if (synth.speaking) {
     synth.cancel();
   }
-
 }
