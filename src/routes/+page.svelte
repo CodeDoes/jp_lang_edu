@@ -4,138 +4,100 @@
   import Card from "$lib/Card.svelte";
   import { cancelJp, sayJP } from "$lib/tts";
   import { onMount } from "svelte";
+  import CardMenu from "$lib/CardMenu.svelte";
+  import { page } from "$app/state";
+  import { goto } from "$app/navigation";
   let card_data = $state(get_card_data(0, 40));
-  let focus: { index: number; focused: boolean } = $state({
-    index: 0,
-    focused: true,
-  });
+
+  let focus_index = $derived(
+    parseInt(/#card-(\d+)/.exec(page?.url.hash || "#card-0")?.at(1) || "0"),
+  );
+  let focus_focused = $state(false);
+
   const handleFocus: Action<HTMLDivElement> = (node) => {
     $effect(() => {
-      node
-        .querySelector(`[data-index="${focus.index}"]`)
-        ?.scrollIntoView({ behavior: "smooth", inline: "end" });
+      if (!focus_focused) {
+        gotoCard(`#card-${focus_index}`);
+      }
     });
   };
-  onMount(() => {});
+  function gotoCard(selector: string) {
+    focus_focused = false;
+    goto(selector, { replaceState: true, noScroll: true });
+    // document.querySelector(selector)?.scrollIntoView({ behavior: "smooth" });
+  }
 </script>
 
-<div
-  class="my_grid_stack grid h-screen w-screen flex-row overflow-auto lg:flex"
->
-  <div class="relative size-full overflow-auto">
-    {@render main()}
-  </div>
-  <div class="w-48 flex-col gap-1 border bg-gray-300 p-1 lg:flex">
-    {@render menu()}
-  </div>
+<div class="stack h-screen w-screen overflow-hidden">
+  {@render main()}
+  <CardMenu {card_data} {focus_index} />
 </div>
 
 {#snippet main()}
-  <div class="pointer-events-none absolute z-50 size-full">
-    <div
-      class="mx-auto mt-2 flex size-[2em] items-center justify-center rounded bg-gray-300"
-    >
-      {focus.index}
-    </div>
-  </div>
   <div
-    class="pointer-events-none absolute z-50 flex size-full flex-row items-center justify-between"
-  >
-    <button
-      tabindex="-1"
-      onclick={() => {
-        if (focus.index > 0) {
-          focus = { index: focus.index - 1, focused: false };
-        }
-      }}
-      class="pointer-events-auto flex aspect-square h-[1em] w-auto items-center justify-center border text-3xl select-none hover:bg-gray-300"
-    >
-      &lt;
-    </button>
-    <button
-      tabindex="-1"
-      onclick={() => {
-        if (focus.index < card_data.length) {
-          focus = { index: focus.index + 1, focused: false };
-        }
-      }}
-      class="pointer-events-auto flex aspect-square h-[1em] w-auto items-center justify-center border text-3xl select-none hover:bg-gray-300"
-    >
-      &gt;
-    </button>
-  </div>
-  <div
-    use:handleFocus
+    class={["flex size-full snap-x snap-mandatory flex-col overflow-x-scroll z-40"]}
     onscrollend={(e) => {
-      focus = {
-        index: Math.floor(
+      focus_focused = true;
+      goto(
+        `#card-${Math.floor(
           e.currentTarget.scrollLeft / e.currentTarget.clientWidth,
-        ),
-        focused: true,
-      };
-      if (focus.index == card_data.length - 1) {
+        )}`,
+      );
+      if (focus_index == card_data.length - 1) {
         card_data = [...card_data, ...get_card_data(card_data.length, 10)];
       }
     }}
-    class="absolute size-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden text-nowrap"
   >
-    {#each card_data as card, index}
+    <div
+      class="sticky top-0 right-0 left-0 z-50 flex w-screen flex-row justify-center rounded border bg-gray-200 p-1"
+    >
       <div
-        class="inline-flex size-full snap-center items-center justify-center border-x"
-        data-index={index}
-        bind:focused={
-          () => focus.index === index,
-          (v) => {
-            if (v === true && focus.index !== index) {
-              focus = { index, focused: false };
+        class="min-size-[2em] sticky top-2 mx-auto flex w-max items-center justify-center self-center rounded border border-gray-400 bg-gray-300 px-2"
+      >
+        {focus_index}/{card_data.length} ({focus_focused})
+      </div>
+    </div>
+    <div
+      class="fixed top-0 right-0 bottom-0 left-0 z-30 mx-auto h-full w-1 bg-black pointer-events-none"
+    ></div>
+    <div
+      use:handleFocus
+      class="z-40 min-h-screen w-max bg-green-400/20 text-nowrap"
+    >
+      {#each card_data as card, index}
+        <div
+          class="mx-auto inline-flex min-h-screen w-screen snap-center items-center justify-center rounded-xl border border-x overflow-y-scroll"
+          data-index={index}
+          bind:focused={
+            () => focus_index === index,
+            (v) => {
+              if (v === true && focus_index !== index) {
+                gotoCard(`#card-${index}`);
+              }
             }
           }
-        }
-      >
-        <Card
-          {...card}
-          speak={focus.index === index && focus.focused}
-          onvalid={() => {
-            if (focus.index < card_data.length) {
-              focus = { index: focus.index + 1, focused: false };
-            }
-          }}
-        />
-      </div>
-    {/each}
-  </div>
-{/snippet}
-{#snippet menu()}
-  <div class="flex flex-row gap-1">
-    <div class="font-semibold">Page</div>
-    <div class="flex-grow rounded border bg-gray-400/50 px-2">
-      {focus.index}/{card_data.length}
-    </div>
-  </div>
-  <div class=" overflow-auto">
-    <div class="flex h-max w-full flex-col">
-      {#each card_data as card, index}
-        <button
-          onclick={() => {
-            if (focus.index !== index) {
-              focus = { index, focused: false };
-            }
-          }}
-          class={[
-            "truncate overflow-hidden border-y p-1 text-start text-xs",
-            focus.index == index ? "bg-gray-400" : "bg-gray-400/50",
-          ]}>{card.question}&zwj;</button
         >
+          <Card
+            {...card}
+            speak={focus_index === index && focus_focused}
+            onvalid={() => {
+              if (focus_index < card_data.length) {
+                gotoCard(`#card-${focus_index + 1}`);
+              }
+            }}
+          />
+        </div>
       {/each}
     </div>
   </div>
 {/snippet}
 
 <style>
-  .my_grid_stack {
-    grid-template-areas: A;
+  .stack {
+    display: grid;
+    grid-template-areas: "A";
   }
-  .my_grid_stack > * {
-    grid-area: A;
+  .stack > * {
+    grid-area: "A";
   }
 </style>
